@@ -17,6 +17,7 @@
 package com.ipaulpro.afilechooser;
 
 import android.content.*;
+import android.content.res.ColorStateList;
 import android.view.*;
 import android.widget.*;
 import java.io.*;
@@ -36,6 +37,10 @@ public class FileListAdapter extends BaseAdapter {
 
     private final static int ICON_FOLDER = R.drawable.ic_folder;
     private final static int ICON_FILE = R.drawable.ic_file;
+
+    // Amethyst look
+    private final static int TEXT_COLOR = 0xFFEDE7FF;
+    private final static int ICON_COLOR = 0xFF9D7BFF;
 
     private final LayoutInflater mInflater;
 
@@ -95,12 +100,27 @@ public class FileListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private static int dp(View v, int value) {
+        return Math.round(value * v.getResources().getDisplayMetrics().density);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
 
-        if (row == null)
+        if (row == null) {
             row = mInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+
+            // Style the row once, when it is first created
+            TextView styled = (TextView) row;
+            styled.setBackgroundResource(R.drawable.amethyst_bg_file_row);
+            styled.setTextColor(TEXT_COLOR);
+            styled.setTextSize(15);
+            styled.setMinHeight(dp(row, 52));
+            styled.setPadding(dp(row, 20), dp(row, 10), dp(row, 20), dp(row, 10));
+            styled.setCompoundDrawablePadding(dp(row, 12));
+            styled.setCompoundDrawableTintList(ColorStateList.valueOf(ICON_COLOR));
+        }
 
         TextView view = (TextView) row;
 
@@ -113,7 +133,6 @@ public class FileListAdapter extends BaseAdapter {
         // If the item is not a directory, use the file icon
         int icon = file.isDirectory() ? ICON_FOLDER : ICON_FILE;
         view.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
-        view.setCompoundDrawablePadding(20);
         return row;
     }
 
